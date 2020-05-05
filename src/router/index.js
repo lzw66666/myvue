@@ -35,13 +35,28 @@ export const asyncRouterMap = [
     children: [
       {
         path: 'article',
-        name: '文章',
+        name: '公告',
         component: _import('article/article'),
-        meta: {title: '文章', icon: 'example'},
+        meta: {title: '公告', icon: 'example'},
         menu: 'article'
+      },
+      {
+        path: 'sysconfig',
+        name: '系统参数管理',
+        component: _import('sysconfig/sysconfig'),
+        meta: {title: '系统参数管理', icon: 'password'},
+        menu: 'sysconfig'
+      },
+      {
+        path: 'goods',
+        name: '商品信息管理',
+        component: _import('goods/goods'),
+        meta: {title: '商品信息管理', icon: 'password'},
+        menu: 'goods'
       },
     ]
   },
+  
   {
     path: '/user',
     component: Layout,
@@ -50,7 +65,11 @@ export const asyncRouterMap = [
     meta: {title: '用户权限', icon: 'table'},
     children: [
       {
-        path: '', name: '用户列表', component: _import('user/user'), meta: {title: '用户列表', icon: 'user'}, menu: 'user'
+        path: '', 
+        name: '用户列表',
+        component: _import('user/user'), 
+        meta: {title: '用户列表', icon: 'user'},
+        menu: 'user'
       },
       {
         path: 'role',

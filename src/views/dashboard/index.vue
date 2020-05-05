@@ -1,7 +1,6 @@
 <template>
   <div class="dashboard-container">
-    <a href="https://github.com/Heeexy/SpringBoot-Shiro-Vue" target="_blank"><img style="margin: 40px"
-      src="http://img.heeexy.com/github.png"></a>
+    商店商品信息管理系统
   </div>
 </template>
 <script>
