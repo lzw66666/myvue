@@ -9,6 +9,7 @@ Vue.use(Router)
 export const constantRouterMap = [
   {path: '/login', component: _import('login/index'), hidden: true},
   {path: '/404', component: _import('404'), hidden: true},
+  {path: '/detail', component: _import('order/detail'), hidden: true},
   {
     path: '/',
     component: Layout,
@@ -18,7 +19,7 @@ export const constantRouterMap = [
     children: [{
       path: 'dashboard', component: _import('dashboard/index')
     }]
-  }
+  },
 ]
 export default new Router({
   // mode: 'history', //后端支持可开
@@ -103,4 +104,5 @@ export const asyncRouterMap = [
     ]
   },
   {path: '*', redirect: '/404', hidden: true}
+
 ]

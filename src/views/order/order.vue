@@ -96,8 +96,8 @@
           id: ''
         },
         timeValue: '',
-        verifyDialogVisible:false,
-        statusList:[],
+        verifyDialogVisible: false,
+        statusList: [],
       }
     },
     created() {
@@ -118,28 +118,28 @@
         })
       },
       // 获取查询时状态的下拉框
-      getStatusList(){
+      getStatusList() {
         this.api({
           url: "/order/getStatus",
           method: "post",
         }).then(data => {
-          this.statusList=data.list;
+          this.statusList = data.list;
         })
       },
       //删除订单
       deleteOrders() {
-          this.api({
-            url: "/order/deleteOrder",
-            method: "post",
-            params: this.deleteInfo
-          }).then(data => {
-            if (data == 'success') {
-              this.$message.info("删除成功！")
-              this.getOrderList();
-            } else {
-              this.$message.warning("删除失败")
-            }
-          })
+        this.api({
+          url: "/order/deleteOrder",
+          method: "post",
+          params: this.deleteInfo
+        }).then(data => {
+          if (data == 'success') {
+            this.$message.info("删除成功！")
+            this.getOrderList();
+          } else {
+            this.$message.warning("删除失败")
+          }
+        })
       },
       //监听pageSize改变的事件
       handleSizeChange(newSize) {
@@ -164,10 +164,13 @@
         this.verifyDialogVisible = true;
         this.deleteInfo.id = id;
       },
-      showDetail(id){
-          this.$route.push({
-            path:'detail',
-          })
+      showDetail(id) {
+        this.$router.push({
+          path: '/detail',
+          query: {
+            id: id
+          }
+        })
       }
     }
   }
