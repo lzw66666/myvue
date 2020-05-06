@@ -28,6 +28,7 @@
         <el-table-column type="index"></el-table-column>
         <el-table-column prop="goods_name" label="商品名称"></el-table-column>
         <el-table-column prop="count" label="库存"></el-table-column>
+        <el-table-column prop="price" label="单价"></el-table-column>
         <el-table-column prop="parent_type" label="父级分类id"></el-table-column>
         <el-table-column prop="type_name" label="父级分类名称"></el-table-column>
         <el-table-column label="操作">
@@ -38,7 +39,8 @@
                          @click="showEditDialog(scope.row)"></el-button>
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="删除商品" placement="top" :enterable="false">
-              <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteGoods(scope.row)"></el-button>
+              <el-button type="danger" icon="el-icon-delete" size="mini"
+                         @click="verifyDeleteGoods(scope.row)"></el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -67,6 +69,9 @@
         <el-form-item label="库存" prop="addCount">
           <el-input v-model.number="addForm.addCount"></el-input>
         </el-form-item>
+        <el-form-item label="单价" prop="addPrice">
+          <el-input v-model.number="addForm.addPrice"></el-input>
+        </el-form-item>
         <el-form-item label="父级商品" prop="addParentType">
           <el-select v-model="addForm.addParentType" placeholder="父级商品名称">
             <el-option v-for="(item,index) in parentNames" :key="index" :label=item.type_name
@@ -93,6 +98,9 @@
         <el-form-item label="库存" prop="goodsCount">
           <el-input v-model.number="editGoodsInfo.goodsCount"></el-input>
         </el-form-item>
+        <el-form-item label="单价" prop="price">
+          <el-input v-model.number="editGoodsInfo.price"></el-input>
+        </el-form-item>
         <el-form-item label="父级商品" prop="parentType">
           <el-select v-model="editGoodsInfo.parentType" placeholder="父级商品名称">
             <el-option v-for="(item,index) in parentNames" :key="index" :label=item.type_name
@@ -106,6 +114,19 @@
          <el-button type="primary" @click="editDialogVisible = false;updateGoods()">修改</el-button>
       </span>
     </el-dialog>
+    <!--删除提示框-->
+    <el-dialog
+      title="提示"
+      :visible.sync="verifyDialogVisible"
+      width="30%">
+      <span>是否进行删除</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="verifyDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="verifyDialogVisible = false;deleteGoods()">确 定</el-button>
+      </span>
+    </el-dialog>
+
+
   </div>
 </template>
 <script>
@@ -132,6 +153,7 @@
           addName: '',
           addCount: '',
           addParentType: '',
+          addPrice: ''
         },
         parentNames: [],//查询的父级分类信息
         addFormRules: {
@@ -157,15 +179,17 @@
         //控制编辑商品信息对话框的显示与隐藏
         editDialogVisible: false,
         //编辑页面的参数
-        editGoodsInfo:{
-          id:'',
-          goodsName:'',
-          goodsCount:'',
-          parentType:''
+        editGoodsInfo: {
+          id: '',
+          goodsName: '',
+          goodsCount: '',
+          parentType: '',
+          price: '',
         },
-        deleteInfo:{
-          id:'',
-        }
+        deleteInfo: {
+          id: '',
+        },
+        verifyDialogVisible: false,
       }
     },
     created() {
@@ -235,13 +259,13 @@
       showEditDialog(goods) {
         this.editDialogVisible = true;
         this.getParentType();
-        this.editGoodsInfo.id=goods.id;
-        this.editGoodsInfo.goodsName=goods.goods_name;
-        this.editGoodsInfo.goodsCount=goods.count;
-        this.editGoodsInfo.parentType=goods.parent_type;
+        this.editGoodsInfo.id = goods.id;
+        this.editGoodsInfo.price = goods.price;
+        this.editGoodsInfo.goodsName = goods.goods_name;
+        this.editGoodsInfo.goodsCount = goods.count;
+        this.editGoodsInfo.parentType = goods.parent_type;
       },
-      deleteGoods(goods) {
-        this.deleteInfo.id=goods.id;
+      deleteGoods() {
         this.api({
           url: "/goods/deleteGoods",
           method: "post",
@@ -255,7 +279,7 @@
           }
         })
       },
-      updateGoods(){
+      updateGoods() {
         this.api({
           url: "/goods/updateGoods",
           method: "post",
@@ -268,6 +292,11 @@
             this.$message.warning("编辑失败")
           }
         })
+      },
+      verifyDeleteGoods(goods) {
+        //提示是否进行删除
+        this.verifyDialogVisible = true;
+        this.deleteInfo.id = goods.id;
       }
     }
   }
