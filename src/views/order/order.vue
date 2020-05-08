@@ -29,7 +29,8 @@
           <el-button type="primary" @click="reset">重置</el-button>
         </el-col>
         <el-col :span="3">
-          <el-button type="success" plain @click="addDialogVisible = true">添加订单</el-button>
+          <el-button type="success" plain @click="addOrderDialogVisible = true;getParentType();getOrderId()">添加订单
+          </el-button>
         </el-col>
       </el-row>
       <!-- 订单区域 -->
@@ -73,6 +74,43 @@
         <el-button type="primary" @click="verifyDialogVisible = false;deleteOrders()">确 定</el-button>
       </span>
     </el-dialog>
+    <!--添加订单的对话框-->
+    <el-dialog
+      title="添加订单"
+      :visible.sync="addOrderDialogVisible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      :destroy-on-close="false"
+      width="50%">
+      <!--主体区域-->
+      <el-form ref="addFormRef" :model="addFormInfo" label-width="80px">
+        <el-form-item label="订单id" prop="goodsName">
+          <el-input :disabled="true" v-model="addFormInfo.orderId"></el-input>
+        </el-form-item>
+        <el-form-item label="会员姓名" prop="goodsName">
+          <el-input v-model="addFormInfo.customerPhone" placeholder="请填写会员手机号，不是会员请勿填写" @blur="verifyPhone"></el-input>
+        </el-form-item>
+        <el-form-item label="添加商品" prop="parentType">
+          <el-select v-model="addFormInfo.parentType" placeholder="商品类型" @change="getGoodsNameByType">
+            <el-option v-for="(item,index) in parentNames" :key="index" :label=item.type_name
+                       :value="item.id"></el-option>
+          </el-select>
+          <el-select v-model="addFormInfo.goodsName" placeholder="商品名称" style="margin-left: 20px">
+            <el-option v-for="(item,index) in goodsNameList" :key="index" :label=item.goodsName
+                       :value="item.id" id="nameList"></el-option>
+          </el-select>
+          <el-input-number v-model="addFormInfo.count" size="medium" :min="1" label="商品数量"
+                           style="position: absolute;width: 120px;margin-left: 20px"></el-input-number>
+        </el-form-item>
+        <!-- 动态添加输入框按钮-->
+        <el-button style="width: 90%;margin-left: 35px" @click="continueAdd">添加商品信息</el-button>
+      </el-form>
+
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addOrderDialogVisible = false;cancelOrders()">取消订单</el-button>
+        <el-button type="primary" @click="addOrderDialogVisible = false;settlement()">结算订单</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -98,6 +136,23 @@
         timeValue: '',
         verifyDialogVisible: false,
         statusList: [],
+        addOrderDialogVisible: false,
+        addFormInfo: {
+          customerPhone: '',
+          parentType: '',
+          goodsName: '',
+          count: '',
+          orderId: ''
+        },
+        parentNames: [],
+        goodsNameByType: {
+          id: '',
+        },
+        goodsNameList: [],
+        verifyPhoneDate: {
+          phone: '',
+        },
+        phoneSuccess: ''
       }
     },
     created() {
@@ -171,6 +226,84 @@
             id: id
           }
         })
+      },
+      getParentType() {
+        this.api({
+          url: "/goods/getParentType",
+          method: "get",
+        }).then(data => {
+          this.parentNames = data.list;
+        })
+      },
+      //添加订单时根据下拉框
+      getGoodsNameByType(value) {
+        //将其下一级下拉框置空
+        this.addFormInfo.goodsName = '';
+        this.goodsNameByType.id = value
+        this.api({
+          url: "/goods/getGoodsNameByParentType",
+          method: "get",
+          params: this.goodsNameByType
+        }).then(data => {
+          this.goodsNameList = data;
+        })
+      },
+      //继续添加按钮信息
+      continueAdd() {
+        //点击继续添加，商品信息先行进行保存，返回信息进行展示
+        this.api({
+          url: "/order/insert",
+          method: "post",
+          params: this.addFormInfo
+        }).then(data => {
+          if (data == 'success') {
+            //插入成功，提示订单信息修改成功，将dialog中的信息清空
+            this.$message.info("订单信息插入成功，请继续插入订单信息")
+            this.addFormInfo.goodsName = '';
+            this.addFormInfo.count = '';
+            this.addFormInfo.parentType = '';
+          } else {
+            this.$message.warning("订单信息更新失败，请重新更新上一条信息")
+          }
+        })
+      },
+      //获取将要插入的订单id
+      getOrderId() {
+        this.api({
+          url: "/order/getMaxOrderId",
+          method: "get",
+        }).then(data => {
+          this.addFormInfo.orderId = data
+        })
+      },
+      verifyPhone() {
+        this.verifyPhoneDate.phone = this.addFormInfo.customerPhone
+        if(this.verifyPhoneDate.phone==''){
+          return;
+        }
+        this.api({
+          url: "/customer/verifyPhone",
+          method: "post",
+          params: this.verifyPhoneDate
+        }).then(data => {
+          //手机号验证不成功
+          if (data == 'fail') {
+            this.$message.info("手机号不存在，重新输入！");
+            this.addFormInfo.customerPhone='';
+          }
+        })
+      },
+      settlement() {
+        this.$router.push({
+          path: '/detail',
+          query: {
+            id: this.addFormInfo.orderId
+          }
+        })
+      },
+      cancelOrders(){
+        this.deleteInfo.id=this.addFormInfo.orderId;
+        this.deleteOrders();
       }
     }
   }

@@ -1,6 +1,6 @@
 <template>
   <div>
-    销售详情
+    z
   </div>
 </template>
 <script>
