@@ -95,12 +95,15 @@
             <el-option v-for="(item,index) in parentNames" :key="index" :label=item.type_name
                        :value="item.id"></el-option>
           </el-select>
-          <el-select v-model="addFormInfo.goodsName" placeholder="商品名称" style="margin-left: 20px">
+          <el-select v-model="addFormInfo.goodsName" placeholder="商品名称" style="margin-left: 20px"
+                     @blur="openNumberInput()">
             <el-option v-for="(item,index) in goodsNameList" :key="index" :label=item.goodsName
                        :value="item.id" id="nameList"></el-option>
           </el-select>
           <el-input-number v-model="addFormInfo.count" size="medium" :min="1" label="商品数量"
-                           style="position: absolute;width: 120px;margin-left: 20px"></el-input-number>
+                           style="position: absolute;width: 120px;margin-left: 20px"
+                           @blur="verifyCount(addFormInfo.count,addFormInfo.goodsName)"
+                           :disabled=numberDisabled></el-input-number>
         </el-form-item>
         <!-- 动态添加输入框按钮-->
         <el-button style="width: 90%;margin-left: 35px" @click="continueAdd">添加商品信息</el-button>
@@ -152,7 +155,12 @@
         verifyPhoneDate: {
           phone: '',
         },
-        phoneSuccess: ''
+        phoneSuccess: '',
+        verifyCountData: {
+          goodsId: '',
+          number: ''
+        },
+        numberDisabled: true
       }
     },
     created() {
@@ -278,7 +286,7 @@
       },
       verifyPhone() {
         this.verifyPhoneDate.phone = this.addFormInfo.customerPhone
-        if(this.verifyPhoneDate.phone==''){
+        if (this.verifyPhoneDate.phone == '') {
           return;
         }
         this.api({
@@ -289,7 +297,22 @@
           //手机号验证不成功
           if (data == 'fail') {
             this.$message.info("手机号不存在，重新输入！");
-            this.addFormInfo.customerPhone='';
+            this.addFormInfo.customerPhone = '';
+          }
+        })
+      },
+      verifyCount(number, goodsId) {
+        this.verifyCountData.goodsId = goodsId;
+        this.verifyCountData.number = number;
+        this.api({
+          url: "/goods/verifyCount",
+          method: "post",
+          params: this.verifyCountData
+        }).then(data => {
+          if (data != 'success') {
+            this.$message.error("库存不足，剩余库存为：" + data);
+            //清空数量
+            this.addFormInfo.count = 0;
           }
         })
       },
@@ -301,9 +324,13 @@
           }
         })
       },
-      cancelOrders(){
-        this.deleteInfo.id=this.addFormInfo.orderId;
+      cancelOrders() {
+        this.deleteInfo.id = this.addFormInfo.orderId;
         this.deleteOrders();
+      },
+      //输入商品信息后打开数字输入框
+      openNumberInput() {
+        this.numberDisabled = false;
       }
     }
   }

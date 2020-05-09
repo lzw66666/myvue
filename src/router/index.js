@@ -103,6 +103,29 @@ export const asyncRouterMap = [
       },
     ]
   },
+  {
+    path: '/safe',
+    component: Layout,
+    redirect: '/safe/actionLog',
+    name: '安全审计',
+    meta: {title: '安全审计', icon: 'tree'},
+    children: [
+      {
+        path: 'actionLog',
+        name: '操作日志',
+        component: _import('safe/actionLog'),
+        meta: {title: '系统操作日志', icon: 'example'},
+        menu: 'actionLog'
+      },
+      {
+        path: 'loginLog',
+        name: '访问日志',
+        component: _import('safe/loginLog'),
+        meta: {title: '系统访问日志', icon: 'password'},
+        menu: 'loginLog'
+      },
+    ]
+  },
   {path: '*', redirect: '/404', hidden: true}
 
 ]
