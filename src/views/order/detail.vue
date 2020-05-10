@@ -50,6 +50,7 @@
          <el-button type="primary" @click="editDialogVisible = false;updateCount()">修改</el-button>
       </span>
     </el-dialog>
+    <el-button style="margin-left:1090px;margin-top: 50px" type="warning" @click="successOrder()">订单结算完毕</el-button>
   </div>
 </template>
 <script>
@@ -73,6 +74,9 @@
         deleteInfo: {
           id: ''
         },
+        updateOrder:{
+          id:'',
+        }
       }
     },
     created() {
@@ -152,6 +156,22 @@
       returnOrder(){
         this.$router.push({
           path: '/order/order',
+        })
+      },
+      successOrder(){
+       this.updateOrder.id= this.queryInfo.id
+        this.api({
+          url: "/order/updateStatus",
+          method: "post",
+          params:this.updateOrder,
+        }).then(data => {
+          if (data == 'success') {
+            this.editForm.count=data.goodsCount;
+            this.$message.info('结算成功')
+            location.reload();
+          } else {
+            this.$message.error('结算失败！')
+          }
         })
       }
     }

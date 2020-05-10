@@ -1,6 +1,8 @@
 <template>
   <div class="dashboard-container">
-    商店商品信息管理系统
+    <el-card>
+      <label style="margin-left: 500px">欢迎光临本店</label>
+    </el-card>
   </div>
 </template>
 <script>

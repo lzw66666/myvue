@@ -15,7 +15,8 @@
           <span v-text="getIndex(scope.$index)"> </span>
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="content" label="文章" style="width: 60px;"></el-table-column>
+      <el-table-column align="center" prop="articleTitle" label="公告标题" style="width: 60px;"></el-table-column>
+      <el-table-column align="center" prop="content" label="公告内容" style="width: 60px;"></el-table-column>
       <el-table-column align="center" label="创建时间" width="170">
         <template slot-scope="scope">
           <span>{{scope.row.createTime}}</span>
@@ -23,7 +24,14 @@
       </el-table-column>
       <el-table-column align="center" label="管理" width="200" v-if="hasPerm('article:update')">
         <template slot-scope="scope">
-          <el-button type="primary" icon="edit" @click="showUpdate(scope.$index)">修改</el-button>
+          <el-tooltip class="item" effect="dark" content="编辑" placement="top" :enterable="false">
+            <el-button type="primary" icon="el-icon-edit" size="mini"
+                       @click="showEditDialog(scope.row)"></el-button>
+          </el-tooltip>
+          <el-tooltip class="item" effect="dark" content="删除" placement="top" :enterable="false">
+            <el-button type="danger" icon="el-icon-delete" size="mini"
+                       @click="deleteArticles(scope.row)"></el-button>
+          </el-tooltip>
         </template>
       </el-table-column>
     </el-table>
@@ -33,14 +41,28 @@
       :current-page="listQuery.pageNum"
       :page-size="listQuery.pageRow"
       :total="totalCount"
-      :page-sizes="[10, 20, 50, 100]"
+      :page-sizes="[5, 10, 20, 30]"
       layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form class="small-space" :model="tempArticle" label-position="left" label-width="60px"
                style='width: 300px; margin-left:50px;'>
-        <el-form-item label="文章">
-          <el-input type="text" v-model="tempArticle.content">
+        <el-form-item label="内容">
+          <el-input
+            type="text"
+            :rows="2"
+            placeholder="输入公告标题"
+            style="width: 500px"
+            v-model="tempArticle.content">
+          </el-input>
+        </el-form-item>
+        <el-form-item label="内容">
+          <el-input
+            type="textarea"
+            :rows="2"
+            placeholder="输入公告内容"
+            style="width: 500px"
+            v-model="tempArticle.content">
           </el-input>
         </el-form-item>
       </el-form>
@@ -61,18 +83,21 @@
         listLoading: false,//数据加载等待动画
         listQuery: {
           pageNum: 1,//页码
-          pageRow: 50,//每页条数
+          pageRow: 5,//每页条数
           name: ''
         },
         dialogStatus: 'create',
         dialogFormVisible: false,
         textMap: {
           update: '编辑',
-          create: '创建文章'
+          create: '编辑'
         },
         tempArticle: {
           id: "",
           content: ""
+        },
+        deleteData:{
+          id:'',
         }
       }
     },
@@ -116,13 +141,6 @@
         this.dialogStatus = "create"
         this.dialogFormVisible = true
       },
-      showUpdate($index) {
-        //显示修改对话框
-        this.tempArticle.id = this.list[$index].id;
-        this.tempArticle.content = this.list[$index].content;
-        this.dialogStatus = "update"
-        this.dialogFormVisible = true
-      },
       createArticle() {
         //保存新文章
         this.api({
@@ -145,6 +163,24 @@
           this.dialogFormVisible = false
         })
       },
+      showEditDialog(row) {
+        this.tempArticle.id=row.id
+        this.tempArticle.conten=row.content
+        this.dialogStatus = "update";
+        this.dialogFormVisible = true
+      },
+      deleteArticles(row) {
+        this.deleteData.id=row.id
+        this.api({
+          url: "/article/deleteArticle",
+          method: "post",
+          params: this.deleteData
+        }).then(data => {
+          if(data=='success')
+          this.$message.info("删除成功！")
+          this.getList();
+        })
+      }
     }
   }
 </script>

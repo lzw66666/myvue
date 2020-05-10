@@ -38,23 +38,17 @@ export const asyncRouterMap = [
         path: 'article',
         name: '公告',
         component: _import('article/article'),
-        meta: {title: '公告', icon: 'example'},
+        meta: {title: '公告', icon: 'table'},
         menu: 'article'
       },
       {
         path: 'sysconfig',
         name: '系统参数管理',
         component: _import('sysconfig/sysconfig'),
-        meta: {title: '系统参数管理', icon: 'password'},
+        meta: {title: '系统参数管理', icon: 'table'},
         menu: 'sysconfig'
       },
-      {
-        path: 'goods',
-        name: '商品信息管理',
-        component: _import('goods/goods'),
-        meta: {title: '商品信息管理', icon: 'password'},
-        menu: 'goods'
-      },
+
     ]
   },
   {
@@ -62,20 +56,20 @@ export const asyncRouterMap = [
     component: Layout,
     redirect: '/user/',
     name: '',
-    meta: {title: '用户权限', icon: 'table'},
+    meta: {title: '用户权限', icon: 'tree'},
     children: [
       {
         path: '',
         name: '用户列表',
         component: _import('user/user'),
-        meta: {title: '用户列表', icon: 'user'},
+        meta: {title: '用户列表', icon: 'table'},
         menu: 'user'
       },
       {
         path: 'role',
         name: '权限管理',
         component: _import('user/role'),
-        meta: {title: '权限管理', icon: 'password'},
+        meta: {title: '权限管理', icon: 'table'},
         menu: 'role'
       },
     ]
@@ -91,15 +85,22 @@ export const asyncRouterMap = [
         path: 'order',
         name: '订单列表',
         component: _import('order/order'),
-        meta: {title: '订单列表', icon: 'example'},
+        meta: {title: '订单列表', icon: 'table'},
         menu: 'order'
       },
       {
         path: 'sale',
         name: '销售详情',
         component: _import('order/sale'),
-        meta: {title: '销售详情', icon: 'password'},
+        meta: {title: '销售详情', icon: 'table'},
         menu: 'sale'
+      },
+      {
+        path: 'goods',
+        name: '商品信息管理',
+        component: _import('goods/goods'),
+        meta: {title: '商品信息管理', icon: 'table'},
+        menu: 'goods'
       },
     ]
   },
@@ -114,14 +115,14 @@ export const asyncRouterMap = [
         path: 'actionLog',
         name: '操作日志',
         component: _import('safe/actionLog'),
-        meta: {title: '系统操作日志', icon: 'example'},
+        meta: {title: '系统操作日志', icon: 'table'},
         menu: 'actionLog'
       },
       {
         path: 'loginLog',
         name: '访问日志',
         component: _import('safe/loginLog'),
-        meta: {title: '系统访问日志', icon: 'password'},
+        meta: {title: '系统访问日志', icon: 'table'},
         menu: 'loginLog'
       },
     ]
