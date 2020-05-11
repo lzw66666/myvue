@@ -290,7 +290,7 @@
           return;
         }
         this.api({
-          url: "/customer/verifyPhone",
+          url: "/member/verifyPhone",
           method: "post",
           params: this.verifyPhoneDate
         }).then(data => {

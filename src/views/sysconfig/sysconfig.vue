@@ -170,7 +170,18 @@
         })
       },
       exportData() {
-
+        this.api({
+          url: "/systemConfig/export",
+          method: "get",
+          params: this.queryInfo
+        }).then(data => {
+          this.listLoading = false;
+          if(data='success'){
+            this.$message.info("导出成功!");
+          }else{
+            this.$message.error("导出失败！");
+          }
+        })
       }
     }
   }

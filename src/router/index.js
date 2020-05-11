@@ -32,7 +32,7 @@ export const asyncRouterMap = [
     component: Layout,
     redirect: '/system/article',
     name: '功能模块',
-    meta: {title: '功能模块', icon: 'tree'},
+    meta: {title: '辅助功能', icon: 'tree'},
     children: [
       {
         path: 'article',
@@ -54,9 +54,9 @@ export const asyncRouterMap = [
   {
     path: '/user',
     component: Layout,
-    redirect: '/user/',
-    name: '',
-    meta: {title: '用户权限', icon: 'tree'},
+    redirect: '/user/user',
+    name: '用户及权限',
+    meta: {title: '用户及权限', icon: 'tree'},
     children: [
       {
         path: '',
@@ -72,14 +72,21 @@ export const asyncRouterMap = [
         meta: {title: '权限管理', icon: 'table'},
         menu: 'role'
       },
+      {
+        path: 'member',
+        name: '会员列表',
+        component: _import('user/member'),
+        meta: {title: '会员列表', icon: 'table'},
+        menu: 'member'
+      },
     ]
   },
   {
     path: '/order',
     component: Layout,
     redirect: '/order/order',
-    name: '订单管理',
-    meta: {title: '订单管理', icon: 'tree'},
+    name: '订单及库存',
+    meta: {title: '订单及库存', icon: 'tree'},
     children: [
       {
         path: 'order',
