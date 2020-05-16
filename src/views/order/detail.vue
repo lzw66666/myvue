@@ -18,6 +18,7 @@
       <el-table-column prop="price" label="商品单价"></el-table-column>
       <el-table-column prop="count" sortable label="商品数量"></el-table-column>
       <el-table-column prop="singlePrice" sortable label="商品总价"></el-table-column>
+      <el-table-column prop="discount" sortable label="折扣后"></el-table-column>
       <el-table-column prop="time" label="下单时间"></el-table-column>
       <el-table-column label="操作">
         <!-- 作用域插槽-->

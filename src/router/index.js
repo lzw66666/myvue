@@ -134,6 +134,22 @@ export const asyncRouterMap = [
       },
     ]
   },
+  {
+    path: '/org',
+    component: Layout,
+    redirect: '/org/org',
+    name: '连锁店',
+    meta: {title: '连锁店', icon: 'tree'},
+    children: [
+      {
+        path: 'org',
+        name: '操作日志',
+        component: _import('org/org'),
+        meta: {title: '连锁店信息', icon: 'table'},
+        menu: 'org'
+      },
+    ]
+  },
   {path: '*', redirect: '/404', hidden: true}
 
 ]

@@ -110,10 +110,42 @@
       </el-form>
 
       <span slot="footer" class="dialog-footer">
+        <el-button type="success" style="margin-right: 40px" @click="dialogVisible = true">添加会员信息</el-button>
         <el-button @click="addOrderDialogVisible = false;cancelOrders()">取消订单</el-button>
         <el-button type="primary" @click="addOrderDialogVisible = false;settlement()">结算订单</el-button>
       </span>
     </el-dialog>
+
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="60%">
+      <!---主体-->
+      <el-form class="demo-form-inline">
+        <el-form-item label="会员姓名">
+          <el-input v-model="addMemberInfo.member_name" placeholder="会员姓名"></el-input>
+        </el-form-item>
+        <el-form-item label="会员电话">
+          <el-input v-model="addMemberInfo.phone" placeholder="会员电话"></el-input>
+        </el-form-item>
+        <el-form-item label="会员地址">
+          <el-input v-model="addMemberInfo.address" placeholder="会员地址"></el-input>
+        </el-form-item>
+        <el-form-item label="会员微信">
+          <el-input v-model="addMemberInfo.wechat" placeholder="会员微信"></el-input>
+        </el-form-item>
+        <el-form-item label="消费次数">
+          <el-input-number :min="1" v-model="addMemberInfo.times" placeholder="消费次数"></el-input-number>
+        </el-form-item>
+      </el-form>
+      <!--底部区域-->
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false;insertMember()">确 定</el-button>
+      </span>
+    </el-dialog>
+
+
   </div>
 </template>
 <script>
@@ -160,7 +192,15 @@
           goodsId: '',
           number: ''
         },
-        numberDisabled: true
+        numberDisabled: true,
+        addMemberInfo: {
+          member_name: '',
+          phone: '',
+          address: '',
+          wechat: '',
+          times: '',
+        },
+        dialogVisible: false,
       }
     },
     created() {
@@ -331,6 +371,20 @@
       //输入商品信息后打开数字输入框
       openNumberInput() {
         this.numberDisabled = false;
+      },
+      insertMember() {
+        this.api({
+          url: "/member/addMember",
+          method: "post",
+          params: this.addMemberInfo,
+        }).then(data => {
+          if (data == 'success') {
+            this.$message.info("添加成功");
+            this.getMemberList();
+          } else {
+            this.$message.error("添加失败");
+          }
+        })
       }
     }
   }

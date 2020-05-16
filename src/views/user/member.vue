@@ -66,25 +66,25 @@
       <!---主体-->
       <el-form class="demo-form-inline">
         <el-form-item label="会员姓名">
-          <el-input v-model="addMemberInfo.member_name" placeholder="参数名编码"></el-input>
+          <el-input v-model="addMemberInfo.member_name" placeholder="会员姓名"></el-input>
         </el-form-item>
         <el-form-item label="会员电话">
-          <el-input v-model="addMemberInfo.phone" placeholder="参数名称"></el-input>
+          <el-input v-model="addMemberInfo.phone" placeholder="会员电话"></el-input>
         </el-form-item>
         <el-form-item label="会员地址">
-          <el-input v-model="addMemberInfo.address" placeholder="参数值"></el-input>
+          <el-input v-model="addMemberInfo.address" placeholder="会员地址"></el-input>
         </el-form-item>
         <el-form-item label="会员微信">
           <el-input v-model="addMemberInfo.wechat" placeholder="会员微信"></el-input>
         </el-form-item>
         <el-form-item label="消费次数">
-          <el-input v-model="addMemberInfo.times" placeholder="消费次数" :disabled="countDistable"></el-input>
+          <el-input-number  :min="1" v-model="addMemberInfo.times" placeholder="消费次数" :disabled="countDistable"></el-input-number>
         </el-form-item>
       </el-form>
       <!--底部区域-->
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false;insertMember()">添加</el-button>
+        <el-button type="primary" @click="dialogVisible = false;insertMember()">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -111,7 +111,8 @@
           phone: '',
           address: '',
           wechat: '',
-          times: ''
+          times: '',
+          membertId: '',
         },
         getByIdInfo: {
           id: '',
@@ -119,7 +120,8 @@
         countDistable: false,
         deleteInfo: {
           id: '',
-        }
+        },
+        addOrUpdateFlag: '',
       }
     },
     created() {
@@ -162,6 +164,7 @@
           method: "get",
           params: this.getByIdInfo,
         }).then(data => {
+          this.addMemberInfo.membertId = data.id;
           this.addMemberInfo.member_name = data.memberName;
           this.addMemberInfo.phone = data.memberPhone;
           this.addMemberInfo.address = data.memberAddress;
@@ -172,21 +175,44 @@
         })
       },
       insertMember() {
-        this.api({
-          url: "/member/addMember",
-          method: "post",
-          params: this.addMemberInfo,
-        }).then(data => {
-          if (data == 'success') {
-            this.$message.info("添加成功");
-            this.getMemberList();
-          } else {
-            this.$message.error("添加失败");
-          }
-        })
+        if (this.countDistable == true) {
+          //编辑
+          this.api({
+            url: "/member/updateMember",
+            method: "post",
+            params: this.addMemberInfo,
+          }).then(data => {
+            if (data == 'success') {
+              this.$message.info("编辑成功");
+              this.getMemberList();
+            } else {
+              this.$message.error("编辑失败");
+            }
+          })
+        } else {
+          //新增
+          this.api({
+            url: "/member/addMember",
+            method: "post",
+            params: this.addMemberInfo,
+          }).then(data => {
+            if (data == 'success') {
+              this.$message.info("添加成功");
+              this.getMemberList();
+            } else {
+              this.$message.error("添加失败");
+            }
+          })
+        }
       },
       addMember() {
         this.dialogVisible = true;
+        this.countDistable = false;
+        this.addMemberInfo.member_name='';
+        this.addMemberInfo.phone='';
+        this.addMemberInfo.address='';
+        this.addMemberInfo.wechat='';
+        this.addMemberInfo.times='';
       },
       showSrueDelete(data) {
         this.deleteInfo.id = data.id;
@@ -203,7 +229,7 @@
           }
         })
       },
-      exportData(){
+      exportData() {
         this.api({
           url: "/member/export",
           method: "post",

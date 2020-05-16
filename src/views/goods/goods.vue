@@ -77,7 +77,9 @@
             <el-option v-for="(item,index) in parentNames" :key="index" :label=item.type_name
                        :value="item.id"></el-option>
           </el-select>
+          <el-button type="success" style="margin-left: 80px;" @click="addParentType">添加商品父类信息</el-button>
         </el-form-item>
+
       </el-form>
       <!--底部区域-->
       <span slot="footer" class="dialog-footer">
@@ -123,6 +125,22 @@
       <span slot="footer" class="dialog-footer">
         <el-button @click="verifyDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="verifyDialogVisible = false;deleteGoods()">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <el-dialog
+      title="父类商品信息"
+      :visible.sync="parentTypeDialogVisible"
+      width="30%">
+      <!--主体区域-->
+      <el-input
+        placeholder="请输入父类商品名称"
+        v-model="addParentTyepValue.parentName"
+        clearable>
+      </el-input>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="parentTypeDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="parentTypeDialogVisible = false;addParentFrom()">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -189,6 +207,10 @@
           id: '',
         },
         verifyDialogVisible: false,
+        parentTypeDialogVisible:false,
+        addParentTyepValue:{
+          parentName:'',
+        }
       }
     },
     created() {
@@ -296,6 +318,23 @@
         //提示是否进行删除
         this.verifyDialogVisible = true;
         this.deleteInfo.id = goods.id;
+      },
+      //添加父类的商品信息
+      addParentType(){
+        this.parentTypeDialogVisible=true;
+      },
+      addParentFrom(){
+        this.api({
+          url: "/goods/addParentType",
+          method: "post",
+          params: this.addParentTyepValue
+        }).then(data => {
+          if(data=='success'){
+            this.$message.info("添加成功");
+            this.addParentTyepValue.parentName='';
+            this.getParentType();
+          }
+        })
       }
     }
   }
