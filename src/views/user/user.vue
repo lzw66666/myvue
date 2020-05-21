@@ -3,7 +3,19 @@
     <div class="filter-container">
       <el-form>
         <el-form-item>
-          <el-button type="primary" icon="plus" v-if="hasPerm('user:add')" @click="showCreate">添加
+          <el-input placeholder="昵称" v-model="listQuery.nickname" style="width: 200px;margin-left: 20px" clearable></el-input>
+          <el-input placeholder="用户名" v-model="listQuery.username" style="width: 200px;margin-left: 20px" clearable></el-input>
+          <el-select style="margin-left: 20px" placeholder="角色类型" v-model="listQuery.roletype">
+            <el-option
+              v-for="item in roles"
+              :key="item.roleId"
+              :label="item.roleName"
+              :value="item.roleId">
+            </el-option>
+          </el-select>
+          <el-button style="margin-left: 60px" type="success" @click="getList">搜索</el-button>
+          <el-button style="margin-left: 60px" type="warning" @click="clear">重置</el-button>
+          <el-button type="primary" style="margin-left: 100px" icon="plus" v-if="hasPerm('user:add')" @click="showCreate">添加
           </el-button>
         </el-form-item>
       </el-form>
@@ -23,8 +35,6 @@
           <el-tag type="primary" v-text="scope.row.roleName" v-else></el-tag>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="创建时间" prop="createTime" width="170"></el-table-column>
-      <el-table-column align="center" label="最近修改时间" prop="updateTime" width="170"></el-table-column>
       <el-table-column align="center" label="管理" width="220" v-if="hasPerm('user:update')">
         <template slot-scope="scope">
           <el-button type="primary" icon="edit" @click="showUpdate(scope.$index)">修改</el-button>
@@ -93,7 +103,11 @@
         listQuery: {
           pageNum: 1,//页码
           pageRow: 5,//每页条数
+          username:'',
+          nickname:'',
+          roletype:'',
         },
+        roleType:[],
         roles: [],//角色列表
         dialogStatus: 'create',
         dialogFormVisible: false,
@@ -111,6 +125,7 @@
       }
     },
     created() {
+      this.getRoleType();
       this.getList();
       if (this.hasPerm('user:add') || this.hasPerm('user:update')) {
         this.getAllRoles();
@@ -237,6 +252,19 @@
           })
         })
       },
+      clear(){
+        this.listQuery.username='';
+        this.listQuery.nickname='';
+        this.listQuery.roletype='';
+      },
+      getRoleType(){
+        this.api({
+          url: "/user/getRoleType",
+          method: "get",
+        }).then(data => {
+          this.roleType=data.info;
+        })
+      }
     }
   }
 </script>

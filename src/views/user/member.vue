@@ -5,13 +5,13 @@
       <!--搜索与添加区域-->
       <el-row :gutter="40">
         <el-col :span="5">
-          <el-input type="text" size="medium" placeholder="会员名称" v-model="queryInfo.memberName"></el-input>
+          <el-input type="text" size="medium" placeholder="会员名称" v-model="queryInfo.memberName" clearable></el-input>
         </el-col>
         <el-col :span="5">
-          <el-input type="text" size="medium" placeholder="会员电话" v-model="queryInfo.memberNumber"></el-input>
+          <el-input type="text" size="medium" placeholder="会员电话" v-model="queryInfo.memberNumber" clearable></el-input>
         </el-col>
         <el-col :span="5">
-          <el-input type="text" size="medium" placeholder="会员微信" v-model="queryInfo.memberWechat"></el-input>
+          <el-input type="text" size="medium" placeholder="会员微信" v-model="queryInfo.memberWechat" clearable></el-input>
         </el-col>
         <el-col :span="2">
           <el-button type="success" @click="getMemberList()">搜索</el-button>
@@ -29,11 +29,11 @@
       <!-- 列表区域 -->
       <el-table :data="list" border stripe resetFields>
         <el-table-column type="index"></el-table-column>
-        <el-table-column prop="member_name" label="会员姓名"></el-table-column>
-        <el-table-column prop="member_phone" label="会员电话"></el-table-column>
-        <el-table-column prop="member_address" label="会员地址"></el-table-column>
-        <el-table-column prop="member_wechat" label="会员微信"></el-table-column>
-        <el-table-column prop="member_count" label="消费次数"></el-table-column>
+        <el-table-column prop="memberName" label="会员姓名"></el-table-column>
+        <el-table-column prop="memberPhone" label="会员电话"></el-table-column>
+        <el-table-column prop="memberAddress" label="会员地址"></el-table-column>
+        <el-table-column prop="memberWechat" label="会员微信"></el-table-column>
+        <el-table-column prop="memberCount" label="消费次数"></el-table-column>
         <el-table-column label="操作">
           <!--作用域插槽-->
           <template slot-scope="scope">

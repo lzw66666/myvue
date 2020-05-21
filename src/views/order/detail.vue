@@ -170,7 +170,9 @@
             this.editForm.count=data.goodsCount;
             this.$message.info('结算成功')
             location.reload();
-          } else {
+          }else if(data=='already'){
+            this.$message.warning('订单已经结算,请勿在次结算')
+          }else{
             this.$message.error('结算失败！')
           }
         })

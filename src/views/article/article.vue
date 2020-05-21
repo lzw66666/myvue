@@ -3,7 +3,18 @@
     <div class="filter-container">
       <el-form>
         <el-form-item>
-          <el-button type="primary" icon="plus" @click="showCreate" v-if="hasPerm('article:add')">添加
+          <el-input placeholder="公告标题" style="width: 200px;" v-model="listQuery.name" clearable></el-input>
+          <el-date-picker
+            v-model="timeValue"
+            type="datetimerange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          style="margin-left: 20px">
+          </el-date-picker>
+          <el-button style="margin-left: 80px" type="success" @click="getList">搜索</el-button>
+          <el-button type="primary" style="margin-left: 240px" icon="plus" @click="showCreate"
+                     v-if="hasPerm('article:add')">添加
           </el-button>
         </el-form-item>
       </el-form>
@@ -22,7 +33,7 @@
           <span>{{scope.row.createTime}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="管理" width="200" v-if="hasPerm('article:update')">
+      <el-table-column align="center" label="操作" width="200" v-if="hasPerm('article:update')">
         <template slot-scope="scope">
           <el-tooltip class="item" effect="dark" content="编辑" placement="top" :enterable="false">
             <el-button type="primary" icon="el-icon-edit" size="mini"
@@ -47,13 +58,13 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form class="small-space" :model="tempArticle" label-position="left" label-width="60px"
                style='width: 300px; margin-left:50px;'>
-        <el-form-item label="内容">
+        <el-form-item label="标题">
           <el-input
             type="text"
             :rows="2"
             placeholder="输入公告标题"
             style="width: 500px"
-            v-model="tempArticle.content">
+            v-model="tempArticle.articleTitle">
           </el-input>
         </el-form-item>
         <el-form-item label="内容">
@@ -84,20 +95,24 @@
         listQuery: {
           pageNum: 1,//页码
           pageRow: 5,//每页条数
-          name: ''
+          name: '',
+          startTime: '',
+          endTime: '',
         },
+        timeValue: '',
         dialogStatus: 'create',
         dialogFormVisible: false,
         textMap: {
           update: '编辑',
-          create: '编辑'
+          create: '创建'
         },
         tempArticle: {
           id: "",
-          content: ""
+          content: "",
+          articleTitle: ''
         },
-        deleteData:{
-          id:'',
+        deleteData: {
+          id: '',
         }
       }
     },
@@ -106,6 +121,11 @@
     },
     methods: {
       getList() {
+        if (this.timeValue != '') {
+          this.listQuery.startTime = this.timeValue[0];
+          this.listQuery.endTime = this.timeValue[1];
+
+        }
         //查询列表
         if (!this.hasPerm('article:list')) {
           return
@@ -164,20 +184,21 @@
         })
       },
       showEditDialog(row) {
-        this.tempArticle.id=row.id
-        this.tempArticle.conten=row.content
+        this.tempArticle.id = row.id
+        this.tempArticle.content = row.content
+        this.tempArticle.articleTitle = row.articleTitle
         this.dialogStatus = "update";
         this.dialogFormVisible = true
       },
       deleteArticles(row) {
-        this.deleteData.id=row.id
+        this.deleteData.id = row.id
         this.api({
           url: "/article/deleteArticle",
           method: "post",
           params: this.deleteData
         }).then(data => {
-          if(data=='success')
-          this.$message.info("删除成功！")
+          if (data == 'success')
+            this.$message.info("删除成功！")
           this.getList();
         })
       }
