@@ -50,7 +50,9 @@
               this.loading = false
               if ("success" === data.result) {
                 this.$router.push({path: '/'})
-              } else {
+              } else if("passwordErrorMoreTimes"){
+                this.$message.error("密码错误次数过多，请联系管理员解锁");
+              }else {
                 this.$message.error("账号/密码错误");
               }
             }).catch(() => {
