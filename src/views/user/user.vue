@@ -39,7 +39,7 @@
         <template slot-scope="scope">
           <el-button type="primary" icon="edit" @click="showUpdate(scope.$index)">修改</el-button>
           <el-button type="danger" icon="delete" v-if="scope.row.userId!=userId "
-                     @click="removeUser(scope.$index)">删除
+                     @click="removeUser(scope.row.userId)">删除
           </el-button>
         </template>
       </el-table-column>
@@ -50,7 +50,7 @@
       :current-page="listQuery.pageNum"
       :page-size="listQuery.pageRow"
       :total="totalCount"
-      :page-sizes="[10, 20, 50, 100]"
+      :page-sizes="[5, 10, 30, 50]"
       layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
@@ -121,6 +121,9 @@
           nickname: '',
           roleId: '',
           userId: ''
+        },
+        deleteInfo:{
+          userId:''
         }
       }
     },
@@ -232,25 +235,30 @@
           })
         })
       },
-      removeUser($index) {
-        let _vue = this;
+      removeUser(data) {
+        // let _vue = this;
         this.$confirm('确定删除此用户?', '提示', {
           confirmButtonText: '确定',
           showCancelButton: false,
           type: 'warning'
         }).then(() => {
-          let user = _vue.list[$index];
-          user.deleteStatus = '2';
-          _vue.api({
-            url: "/user/updateUser",
+          this.deleteInfo.userId=data;
+          this.api({
+            url: "/user/userDelete",
             method: "post",
-            data: user
-          }).then(() => {
-            _vue.getList()
-          }).catch(() => {
-            _vue.$message.error("删除失败")
+            params: this.deleteInfo
+          }).then(data => {
+            if(data=='success'){
+              this.$message.info("删除成功！");
+              this.getList();
+            }else{
+              this.$message.error("删除失败！");
+              this.getList();
+            }
           })
         })
+
+
       },
       clear(){
         this.listQuery.username='';

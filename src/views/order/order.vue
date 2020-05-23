@@ -106,12 +106,12 @@
                            :disabled=numberDisabled></el-input-number>
         </el-form-item>
         <!-- 动态添加输入框按钮-->
-        <el-button style="width: 90%;margin-left: 35px" @click="continueAdd">添加商品信息</el-button>
+        <el-button  type="info" style="width: 90%;margin-left: 35px" @click="continueAdd">添加商品信息</el-button>
       </el-form>
 
       <span slot="footer" class="dialog-footer">
         <el-button type="success" style="margin-right: 40px" @click="dialogVisible = true">添加会员信息</el-button>
-        <el-button @click="addOrderDialogVisible = false;cancelOrders()">取消订单</el-button>
+        <el-button type="danger" @click="addOrderDialogVisible = false;cancelOrders()">取消订单</el-button>
         <el-button type="primary" @click="addOrderDialogVisible = false;settlement()">结算订单</el-button>
       </span>
     </el-dialog>
@@ -310,6 +310,7 @@
             this.addFormInfo.goodsName = '';
             this.addFormInfo.count = '';
             this.addFormInfo.parentType = '';
+            this.numberDisabled=true;
           } else {
             this.$message.warning("订单信息更新失败，请重新更新上一条信息")
           }

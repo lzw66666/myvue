@@ -73,7 +73,7 @@
               </el-checkbox-group>
             </div>
           </div>
-          <p style="color:#848484;">说明:红色权限为对应菜单内的必选权限</p>
+<!--          <p style="color:#848484;">说明:红色权限为对应菜单内的必选权限</p>-->
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -327,7 +327,7 @@
   }
 </script>
 <style scoped>
-  .requiredPerm {
-    color: #ff0e13;
-  }
+  /*.requiredPerm {*/
+  /*  color: #ff0e13;*/
+  /*}*/
 </style>

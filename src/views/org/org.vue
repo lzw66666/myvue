@@ -35,7 +35,7 @@
         <!-- 作用域插槽-->
         <template slot-scope="scope">
           <el-tooltip class="item" effect="dark" content="编辑" placement="top" :enterable="false">
-            <el-button type="primary" icon="el-icon-location" size="mini"
+            <el-button type="primary" icon="el-icon-edit" size="mini"
                        @click="dialogVisible = true;getById(scope.row.storeId)"></el-button>
           </el-tooltip>
           <el-tooltip class="item" effect="dark" content="删除" placement="top" :enterable="false">
