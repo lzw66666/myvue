@@ -72,7 +72,34 @@
           <el-input v-model="addMemberInfo.phone" placeholder="会员电话"></el-input>
         </el-form-item>
         <el-form-item label="会员地址">
-          <el-input v-model="addMemberInfo.address" placeholder="会员地址"></el-input>
+          <el-select v-model="location.province" placeholder="省份" @focus="getProvince" @change="getCity(location.province)">
+            <el-option
+              v-for="(item,index) in province"
+              :key="index"
+              :label="item.name"
+              :value="item.name"
+            >
+            </el-option>
+          </el-select>
+          <el-select v-model="location.city" placeholder="市区"  @change="getTown(location.city)">
+            <el-option
+              v-for="(item,index) in city"
+              :key="index"
+              :label="item.name"
+              :value="item.name"
+            >
+            </el-option>
+          </el-select>
+
+          <el-select v-model="location.town" placeholder="县">
+            <el-option
+              v-for="(item,index) in town"
+              :key="index"
+              :label="item.name"
+              :value="item.name"
+            >
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="会员微信">
           <el-input v-model="addMemberInfo.wechat" placeholder="会员微信"></el-input>
@@ -109,7 +136,11 @@
         addMemberInfo: {
           member_name: '',
           phone: '',
-          address: '',
+          address: {
+            province:'',
+            city:'',
+            town:'',
+          },
           wechat: '',
           times: '',
           membertId: '',
@@ -122,6 +153,23 @@
           id: '',
         },
         addOrUpdateFlag: '',
+        //省份数据
+        province:[],
+        //市区数据
+        city:[],
+        //县级数据
+        town:[],
+        location:{
+          province:'',
+          city:'',
+          town:'',
+        },
+        getCityParam:{
+          code:''
+        },
+        getTownParam:{
+          name:''
+        },
       }
     },
     created() {
@@ -167,7 +215,9 @@
           this.addMemberInfo.membertId = data.id;
           this.addMemberInfo.member_name = data.memberName;
           this.addMemberInfo.phone = data.memberPhone;
-          this.addMemberInfo.address = data.memberAddress;
+          this.location.province = data.province;
+          this.location.city = data.city;
+          this.location.town = data.town;
           this.addMemberInfo.wechat = data.memberWechat;
           this.addMemberInfo.times = data.memberCount;
           //将消费次数变为不可变的
@@ -191,6 +241,7 @@
           })
         } else {
           //新增
+          this.addMemberInfo.address=this.location;
           this.api({
             url: "/member/addMember",
             method: "post",
@@ -210,7 +261,9 @@
         this.countDistable = false;
         this.addMemberInfo.member_name='';
         this.addMemberInfo.phone='';
-        this.addMemberInfo.address='';
+        this.location.province='';
+        this.location.city='';
+        this.location.town='';
         this.addMemberInfo.wechat='';
         this.addMemberInfo.times='';
       },
@@ -241,6 +294,40 @@
           } else {
             this.$message.error("导出失败！")
           }
+        })
+      },
+      getProvince(){
+        this.api({
+          url: "/location/getProvince",
+          method: "get",
+        }).then(data => {
+          this.province=data.list;
+        })
+      },
+      getCity(code){
+        this.location.city='';
+        this.location.town='';
+        this.city=[];
+        this.town=[];
+        this.getCityParam.code=code;
+        this.api({
+          url: "/location/getCity",
+          method: "get",
+          params: this.getCityParam,
+        }).then(data => {
+          this.city=data.list;
+        })
+      },
+      getTown(name){
+        this.location.town='';
+        this.town=[];
+        this.getTownParam.name=name;
+        this.api({
+          url: "/location/getTown",
+          method: "get",
+          params: this.getTownParam,
+        }).then(data => {
+          this.town=data.list;
         })
       }
     }
