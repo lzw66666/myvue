@@ -8,7 +8,7 @@
   <div>
     <div class="c1">
       <label>订单编号:{{queryInfo.id}}</label>
-      <el-button style="margin-left:700px" type="primary" @click="exportData">导出数据</el-button>
+      <el-button style="margin-left:800px" type="primary" @click="exportData">导出数据</el-button>
       <el-button style="margin-left:60px" type="success" @click="returnOrder">返回订单列表页</el-button>
     </div>
     <el-table :data="tableData" border show-summary style="width: 80%;margin-left: 140px;">
@@ -51,7 +51,7 @@
          <el-button type="primary" @click="editDialogVisible = false;updateCount()">修改</el-button>
       </span>
     </el-dialog>
-    <el-button style="margin-left:1090px;margin-top: 50px" type="warning" @click="successOrder()">订单结算完毕</el-button>
+    <el-button style="margin-left:1200px;margin-top: 50px" type="warning" @click="successOrder()" :disabled=orderStatus >订单结算</el-button>
   </div>
 </template>
 <script>
@@ -77,12 +77,17 @@
         },
         updateOrder:{
           id:'',
+        },
+        orderStatus:false,
+        getOrderStatusParam:{
+          id:''
         }
       }
     },
     created() {
       this.getParams();
       this.getOrderDetail();
+      this.getOrderStatus(this.queryInfo.id);
     },
     methods: {
       getParams() {
@@ -175,6 +180,18 @@
           }else{
             this.$message.error('结算失败！')
           }
+        })
+      },
+      getOrderStatus(id){
+        this.getOrderStatusParam.id=id
+        this.api({
+          url: "/order/getOrderStatus",
+          method: "get",
+          params:this.getOrderStatusParam
+        }).then(data => {
+            if(data=='success'){
+              this.orderStatus=true;
+            }
         })
       }
     }
