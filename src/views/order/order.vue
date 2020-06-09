@@ -87,7 +87,7 @@
         <el-form-item label="订单id" prop="goodsName">
           <el-input :disabled="true" v-model="addFormInfo.orderId"></el-input>
         </el-form-item>
-        <el-form-item label="会员姓名" prop="goodsName">
+        <el-form-item label="会员手机" prop="goodsName">
           <el-input v-model="addFormInfo.customerPhone" placeholder="请填写会员手机号，不是会员请勿填写" @blur="verifyPhone"></el-input>
         </el-form-item>
         <el-form-item label="添加商品" prop="parentType">
